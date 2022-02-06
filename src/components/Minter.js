@@ -91,7 +91,7 @@ function Minter() {
     }
   };
   /**
-   * This function is where the transaction happens.
+   * This function returns how many NFTs have already been minted.
    * =======================================================
    * @param params providing necessary parameters for the function to work.
    * @returns makes changes on the @var mintInfo 
@@ -121,21 +121,26 @@ function Minter() {
   };
   /**
    * This function gets cost of the NFT
+   * TODO: Fix encodeABI()
    * =======================================================
    * @param params providing necessary parameters for the function to work.
    * @returns makes changes on the @var mintInfo 
    */
   const getCost = async () => {
+    console.log("executing getCost");
     const params = {
       to: info.contractJSON.address,
       from: info.account,
       data: info.contract.methods.cost().encodeABI(),
     };
     try {
+      console.log("executing getCost1");
+      console.log(info.contract.methods.cost().encodeABI());
       const result = await window.ethereum.request({
         method: "eth_call",
         params: [params],
       });
+      console.log("Print getCost : ");
       console.log(info.web3.utils.hexToNumberString(result));
       setMintInfo((prevState) => ({
         ...prevState,
@@ -323,6 +328,7 @@ function Minter() {
           }}
           className="_90"
           target="_blank"
+          rel="noreferrer"
           href="https://rinkeby.etherscan.io/address/0x2e259dB58384f318304a546ef7e672735a3C5385"
         >
           View Contract
