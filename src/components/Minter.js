@@ -18,15 +18,21 @@ const initialMintState = {
   status: `Mint your ${contract.name}`,
   amount: 1,
   supply: "0",
-  cost: "0",
+  cost: "5",
 };
 
 function Minter() {
   const [info, setInfo] = useState(initialInfoState);
   const [mintInfo, setMintInfo] = useState(initialMintState);
-
-  console.log(info);
-
+  /**
+   * This function initializes a connection between the front-end and the smart contract.
+   *  
+   * =======================================================
+   * @param {*} _request get the account(s) of the end-user that has connected via Ethereum
+   * @param {*} _contractJSON Get the contract information from the file
+   * @returns Makes changes on the state of @var info
+   * 
+   */
   const init = async (_request, _contractJSON) => {
     if (window.ethereum.isMetaMask) {
       try {
@@ -69,7 +75,11 @@ function Minter() {
       }));
     }
   };
-
+  /**
+   * This function listens to account change and chain change events.
+   * =======================================================
+   * @returns Reloads the page on the same position.
+   */
   const initListeners = () => {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", () => {
@@ -80,7 +90,12 @@ function Minter() {
       });
     }
   };
-
+  /**
+   * This function is where the transaction happens.
+   * =======================================================
+   * @param params providing necessary parameters for the function to work.
+   * @returns makes changes on the @var mintInfo 
+   */
   const getSupply = async () => {
     const params = {
       to: info.contractJSON.address,
@@ -104,7 +119,12 @@ function Minter() {
       }));
     }
   };
-
+  /**
+   * This function gets cost of the NFT
+   * =======================================================
+   * @param params providing necessary parameters for the function to work.
+   * @returns makes changes on the @var mintInfo 
+   */
   const getCost = async () => {
     const params = {
       to: info.contractJSON.address,
@@ -128,7 +148,13 @@ function Minter() {
       }));
     }
   };
-
+  /**
+   * This is where the actual mint process happens.
+   * =======================================================
+   * @param params providing necessary parameters for the function to work.
+   * @param value is calculated by multiplying mintInfo.cost * mintInfo.amount
+   * @returns makes changes on the @var mintInfo 
+   */
   const mint = async () => {
     const params = {
       to: info.contractJSON.address,
@@ -157,6 +183,7 @@ function Minter() {
           "Nice! Your NFT will show up on Opensea, once the transaction is successful.",
       }));
       getSupply();
+      
     } catch (err) {
       setMintInfo((prevState) => ({
         ...prevState,
@@ -181,6 +208,7 @@ function Minter() {
 
   useEffect(() => {
     connectToContract(contract);
+    console.log(info.connected);
     initListeners();
   }, []);
 
@@ -207,7 +235,7 @@ function Minter() {
               }}
             >
               <button
-                disabled={!info.connected || mintInfo.cost == "0"}
+                disabled={!info.connected || mintInfo.cost === "0"}
                 className="small_button"
                 onClick={() => updateAmount(mintInfo.amount - 1)}
               >
@@ -215,7 +243,7 @@ function Minter() {
               </button>
               <div style={{ width: 10 }}></div>
               <button
-                disabled={!info.connected || mintInfo.cost == "0"}
+                disabled={!info.connected || mintInfo.cost === "0"}
                 className="button"
                 onClick={() => mint()}
               >
@@ -223,7 +251,7 @@ function Minter() {
               </button>
               <div style={{ width: 10 }}></div>
               <button
-                disabled={!info.connected || mintInfo.cost == "0"}
+                disabled={!info.connected || mintInfo.cost === "0"}
                 className="small_button"
                 onClick={() => updateAmount(mintInfo.amount + 1)}
               >
@@ -295,7 +323,7 @@ function Minter() {
           }}
           className="_90"
           target="_blank"
-          href="https://polygonscan.com/token/0x827acb09a2dc20e39c9aad7f7190d9bc53534192"
+          href="https://rinkeby.etherscan.io/address/0x2e259dB58384f318304a546ef7e672735a3C5385"
         >
           View Contract
         </a>
